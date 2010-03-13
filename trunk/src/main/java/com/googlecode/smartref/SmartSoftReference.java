@@ -4,9 +4,6 @@
  */
 package com.googlecode.smartref;
 
-import com.googlecode.smartref.internal.SmartReferenceFinalizer;
-
-import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 
 /**
@@ -15,13 +12,13 @@ import java.lang.ref.SoftReference;
 public class SmartSoftReference<T> extends SoftReference<T> implements SmartReference
 {
    public SmartSoftReference(final T referent)
-      { super(referent, SOFT_REF_QUEUE); }
+      { this(referent, DEFAULT_SOFT_REF_QUEUE); }
+
+   public SmartSoftReference(final T referent, final SmartReferenceQueue<? super T> queue)
+      { super(referent, queue); }
 
    public void finalizeReferent()
       { /* do nothing */ }
 
-   private final static ReferenceQueue SOFT_REF_QUEUE     = new ReferenceQueue();
-   private final static Thread         SOFT_REF_FINALIZER = new SmartReferenceFinalizer("SmartSoftReference Finalizer", SOFT_REF_QUEUE);
-
-   static { SOFT_REF_FINALIZER.start(); }
+   private final static SmartReferenceQueue<Object> DEFAULT_SOFT_REF_QUEUE = new SmartReferenceQueue();
 }

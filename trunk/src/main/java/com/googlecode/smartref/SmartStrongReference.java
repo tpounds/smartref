@@ -4,10 +4,7 @@
  */
 package com.googlecode.smartref;
 
-import com.googlecode.smartref.internal.SmartReferenceFinalizer;
-
 import java.lang.ref.PhantomReference;
-import java.lang.ref.ReferenceQueue;
 
 /**
  * @author Trevor Pounds
@@ -17,23 +14,16 @@ public class SmartStrongReference<T> extends PhantomReference<T> implements Smar
    private final T referent;
 
    public SmartStrongReference(final T referent)
+      { this(referent, STRONG_REF_QUEUE); }
+
+   public SmartStrongReference(final T referent, final SmartReferenceQueue<? super T> queue)
    {
-      super(referent, STRONG_REF_QUEUE);
+      super(referent, queue);
       this.referent = referent;
    }
 
    public void finalizeReferent()
       { /* do nothing */ }
 
-   @Override final void finalize() throws Throwable
-   {
-      super.clear();
-      this.referent = null;
-      super.finalize();
-   }
-
-   private final static ReferenceQueue STRONG_REF_QUEUE     = new ReferenceQueue();
-   private final static Thread         STRONG_REF_FINALIZER = new SmartReferenceFinalizer("SmartStrongReference Finalizer", STRONG_REF_QUEUE);
-
-   static { STRONG_REF_FINALIZER.start(); }
+   private final static SmartReferenceQueue<Object> STRONG_REF_QUEUE = new SmartReferenceQueue();
 }

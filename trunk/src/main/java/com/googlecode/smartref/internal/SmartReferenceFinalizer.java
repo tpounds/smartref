@@ -4,8 +4,9 @@
  */
 package com.googlecode.smartref.internal;
 
-package com.googlecode.smartref.SmartReference;
+import com.googlecode.smartref.SmartReference;
 
+import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 
 /**
@@ -29,20 +30,22 @@ public class SmartReferenceFinalizer extends Thread
       {
          while(true)
          {
-            Reference ref = refQueue.remove();
+            Reference<?> ref = refQueue.remove();
             if(ref instanceof SmartReference)
                { ((SmartReference) ref).finalizeReferent(); }
             else
             {
+/* TODO: implement annotated finalization
                for(Method finalizer : ref.getClass().getDeclaredMethods())
                {
                   if(m.getAnnotation(Finalize.class))
                   {
                      if(m.getParameterTypes().length != 0)
-                        { throw IllegalArgumentException(/*TODO*/); }
+                        { throw IllegalArgumentException(); }
                      m.invoke(ref);
                   }
                }
+*/
             }
          }
       }

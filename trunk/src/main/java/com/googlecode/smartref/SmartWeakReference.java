@@ -4,24 +4,21 @@
  */
 package com.googlecode.smartref;
 
-import com.googlecode.smartref.internal.SmartReferenceFinalizer;
-
-import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
 /**
  * @author Trevor Pounds
  */
-public class SmartWeakReference<T> extends PhantomReference<T> implements SmartReference
+public class SmartWeakReference<T> extends WeakReference<T> implements SmartReference
 {
    public SmartWeakReference(final T referent)
-      { super(referent, WEAK_REF_QUEUE); }
+      { this(referent, DEFAULT_WEAK_REF_QUEUE); }
+
+   public SmartWeakReference(final T referent, final SmartReferenceQueue<? super T> queue)
+      { super(referent, queue); }
 
    public void finalizeReferent()
       { /* do nothing */ }
 
-   private final static ReferenceQueue WEAK_REF_QUEUE     = new ReferenceQueue();
-   private final static Thread         WEAK_REF_FINALIZER = new SmartReferenceFinalizer("SmartWeakReference Finalizer", WEAK_REF_QUEUE);
-
-   static { WEAK_REF_FINALIZER.start(); }
+   private final static SmartReferenceQueue<Object> DEFAULT_WEAK_REF_QUEUE = new SmartReferenceQueue();
 }
