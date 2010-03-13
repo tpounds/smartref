@@ -4,10 +4,7 @@
  */
 package com.googlecode.smartref;
 
-import com.googlecode.smartref.internal.SmartReferenceFinalizer;
-
 import java.lang.ref.PhantomReference;
-import java.lang.ref.ReferenceQueue;
 
 /**
  * @author Trevor Pounds
@@ -15,13 +12,13 @@ import java.lang.ref.ReferenceQueue;
 public class SmartPhantomReference<T> extends PhantomReference<T> implements SmartReference
 {
    public SmartPhantomReference(final T referent)
-      { super(referent, PHANTOM_REF_QUEUE); }
+      { super(referent, DEFAULT_PHANTOM_REF_QUEUE); }
+
+   public SmartPhantomReference(final T referent, final SmartReferenceQueue<? super T> queue)
+      { super(referent, queue); }
 
    public void finalizeReferent()
       { /* do nothing */ }
 
-   private final static ReferenceQueue PHANTOM_REF_QUEUE     = new ReferenceQueue();
-   private final static Thread         PHANTOM_REF_FINALIZER = new SmartReferenceFinalizer("SmartPhantomReference Finalizer", PHANTOM_REF_QUEUE);
-
-   static { PHANTOM_REF_FINALIZER.start(); }
+   private final static SmartReferenceQueue<Object> DEFAULT_PHANTOM_REF_QUEUE = new SmartReferenceQueue();
 }

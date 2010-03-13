@@ -9,5 +9,5 @@ package com.googlecode.smartref;
  */
 public interface SmartReference
 {
-   protected void finalizeReferent();
+   void finalizeReferent();
 }
