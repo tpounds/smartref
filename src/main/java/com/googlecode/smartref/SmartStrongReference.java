@@ -11,7 +11,7 @@ import java.lang.ref.PhantomReference;
  */
 public class SmartStrongReference<T> extends PhantomReference<T> implements SmartReference
 {
-   private final T referent;
+   private T referent;
 
    public SmartStrongReference(final T referent)
       { this(referent, STRONG_REF_QUEUE); }
@@ -20,6 +20,18 @@ public class SmartStrongReference<T> extends PhantomReference<T> implements Smar
    {
       super(referent, queue);
       this.referent = referent;
+   }
+
+   @Override public void clear()
+      { referent = null; }
+
+   @Override public T get()
+      { return referent; }
+
+   @Override protected final void finalize() throws Throwable
+   {
+      enqueue();
+      super.finalize();
    }
 
    public void finalizeReferent()
